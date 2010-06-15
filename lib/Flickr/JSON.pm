@@ -12,12 +12,19 @@ has 'useragent_conf' => (
     isa      => 'HashRef',
     is       => 'ro',
     required => 1,
+    lazy     => 1,
     default  => sub { { 
         name => __PACKAGE__ . ' v.' . $VERSION, 
     }; },
 );
 
 has 'api_key' => (
+    isa      => 'Str',
+    is       => 'rw',
+    required => 1,
+);
+
+has 'base_url' => (
     isa      => 'Str',
     is       => 'rw',
     required => 1,
@@ -53,8 +60,8 @@ sub url {
         %$args,
     );
 
-    'http://api.flickr.com/services/rest/?' 
-        . join( '&', map { $_ . '=' . $params{ $_ } } keys %params );    
+    $self->base_url . ( ( $self->base_url !~ /\/$/ ) ? '/' : '' )
+        . '?' . join( '&', map { $_ . '=' . $params{ $_ } } keys %params );    
 }
 
 1;
